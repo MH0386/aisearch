@@ -1,8 +1,8 @@
 ---
 title: AnySearch
 emoji: 🔍
-colorFrom: black
-colorTo: white
+colorFrom: gray
+colorTo: blue
 sdk: docker
 app_file: app.py
 pinned: false
