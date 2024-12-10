@@ -8,6 +8,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Remove Unnecessary Files
+        run: rm -rd .github
       - name: Login to HuggingFace Hub
         uses: osbm/huggingface-login@v0.0.2
         with:
