@@ -1,19 +1,25 @@
-from phi.agent import Agent
-from phi.model.groq import Groq
-from phi.playground import Playground, serve_playground_app
-from phi.storage.agent.sqlite import SqlAgentStorage
-from phi.tools.duckduckgo import DuckDuckGo
+from langchain_cerebras import ChatCerebras
+from langchain_core.prompts import ChatPromptTemplate
 
-agent = Agent(
-    name="Llama3",
-    model=Groq(id="llama3-groq-70b-8192-tool-use-preview"),
-    storage=SqlAgentStorage(table_name="llama3", db_file="agents.db"),
-    add_history_to_messages=True,
-    tools=[DuckDuckGo()],
-    markdown=True,
+llm = ChatCerebras(
+    model="llama3.3-70b",
 )
 
-app = Playground(agents=[ agent]).get_app()
+prompt: ChatPromptTemplate = ChatPromptTemplate.from_messages(
+    messages=[
+        (
+            "system",
+            "You are a helpful assistant that translates {input_language} to {output_language}.",
+        ),
+        ("human", "{input}"),
+    ]
+)
 
-if __name__ == "__main__":
-    serve_playground_app(app="playground:app", reload=True)
+chain = prompt | llm
+chain.invoke(
+    input={
+        "input_language": "English",
+        "output_language": "German",
+        "input": "I love programming.",
+    }
+)
