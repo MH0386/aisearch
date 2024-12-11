@@ -1,25 +1,27 @@
-from langchain_cerebras import ChatCerebras
-from langchain_core.prompts import ChatPromptTemplate
+from typing import Any
+# from chain import chain
+import litserve as ls
 
-llm = ChatCerebras(
-    model="llama3.3-70b",
-)
 
-prompt: ChatPromptTemplate = ChatPromptTemplate.from_messages(
-    messages=[
-        (
-            "system",
-            "You are a helpful assistant that translates {input_language} to {output_language}.",
-        ),
-        ("human", "{input}"),
-    ]
-)
+class SimpleLitAPI(ls.LitAPI):
+    def setup(self, device) -> None:
+        self.model1 = lambda x: x**2
+        self.model2 = lambda x: x**3
 
-chain = prompt | llm
-chain.invoke(
-    input={
-        "input_language": "English",
-        "output_language": "German",
-        "input": "I love programming.",
-    }
-)
+    def decode_request(self, request):
+        return request["input"]
+
+    def predict(self, x) -> dict[str, Any]:
+        squared = self.model1(x)
+        cubed = self.model2(x)
+        output = squared + cubed
+        return {"output": output}
+
+    def encode_response(self, output) -> dict[str, Any]:
+        return {"output": output}
+
+
+if __name__ == "__main__":
+    api = SimpleLitAPI()
+    server = ls.LitServer(api, accelerator="gpu")
+    server.run(port=8000)
