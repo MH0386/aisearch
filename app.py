@@ -1,19 +1,18 @@
 from typing import Any
-# from chain import chain
+
 import litserve as ls
 
 
 class SimpleLitAPI(ls.LitAPI):
     def setup(self, device) -> None:
-        self.model1 = lambda x: x**2
-        self.model2 = lambda x: x**3
+        print(f"setup at {device}")
 
-    def decode_request(self, request):
+    def decode_request(self, request) -> Any:
         return request["input"]
 
     def predict(self, x) -> dict[str, Any]:
-        squared = self.model1(x)
-        cubed = self.model2(x)
+        squared = self.model1(x=x)
+        cubed = self.model2(x=x)
         output = squared + cubed
         return {"output": output}
 
@@ -23,5 +22,5 @@ class SimpleLitAPI(ls.LitAPI):
 
 if __name__ == "__main__":
     api = SimpleLitAPI()
-    server = ls.LitServer(api, accelerator="gpu")
+    server = ls.LitServer(lit_api=api, accelerator="auto")
     server.run(port=8000)
