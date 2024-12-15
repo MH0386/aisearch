@@ -1,12 +1,10 @@
 from typing import Any
-
 import litserve as ls
 
 
 class SimpleLitAPI(ls.LitAPI):
     def setup(self, device) -> None:
         print(f"setup at {device}")
-
     def decode_request(self, request) -> Any:
         return request["input"]
 

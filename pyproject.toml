@@ -10,4 +10,5 @@ dependencies = [
     "langchain-cerebras>=0.3.0",
     "langchain-core>=0.3.24",
     "litserve>=0.2.5",
+    "streamlit>=1.41.1",
 ]
