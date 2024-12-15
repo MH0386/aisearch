@@ -21,4 +21,4 @@ jobs:
       - name: Check if logged in
         run: huggingface-cli whoami
       - name: Upload
-        run: huggingface-cli upload MH0386/AnySearch . --repo-type space
+        run: huggingface-cli upload MH0386/AnySearch ./frontend . --repo-type space
